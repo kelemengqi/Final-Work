@@ -5,4 +5,7 @@ services:
     ports:
       - "80:80"
   
-  
+  todo-app:
+    image: benoitg/todomvc-app:latest  
+    ports:
+      - "3000:3000"
