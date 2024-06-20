@@ -1,8 +1,7 @@
-# docker-compose.yml
 version: '3'
 services:
   my-website:
-    image: ${{ secrets.DOCKER_HUB_USERNAME }}/my-website:latest
+    image: ${DOCKER_HUB_USERNAME}/my-website:latest
     ports:
       - "80:80"
   
