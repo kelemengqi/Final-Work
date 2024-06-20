@@ -6,36 +6,56 @@ on:
       - main
 
 jobs:
-  build:
+  docker:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-      
-    - name: Log in to DockerHub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      
-    - name: Build and push my-website image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/my-website:latest ./my-website
-        docker push ${{ secrets.DOCKER_USERNAME }}/my-website:latest
-
-    - name: Generate docker-compose.yml
-      run: |
-        echo "version: '3'" > docker-compose.yml
-        echo "services:" >> docker-compose.yml
-        echo "  my-website:" >> docker-compose.yml
-        echo "    image: ${{ secrets.DOCKER_USERNAME }}/my-website:latest" >> docker-compose.yml
-        echo "    ports:" >> docker-compose.yml
-        echo "      - '80:80'" >> docker-compose.yml
-        echo "  todo-app:" >> docker-compose.yml
-        echo "    image: docker/getting-started" >> docker-compose.yml
-        echo "    ports:" >> docker-compose.yml
-        echo "      - '3000:3000'" >> docker-compose.yml
-      
-    - name: Deploy using Docker Compose
-      run: docker-compose up -d
+      - name: Checkout
+        uses: actions/checkout@v3     
+        
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+        
+      - name: Prepare the docker-compose run
+        run: |
+          ls -l
+        
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/234-deploylab-frontend:latest
+          
+      - name: Copy file via ssh password
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST_SERVER }}
+          username: ${{ secrets.HOST_USER_NAME }}
+          key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
+          port: 22
+          source: "docker-compose.yml"
+          target: "/home/ubuntu/frontend"
+          
+      - name: Docker compose
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST_SERVER }}
+          username: ${{ secrets.HOST_USER_NAME }}
+          key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/frontend
+            echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+            docker compose down
+            docker compose pull
+            docker compose up -d
+            rm -rf /home/ubuntu/frontend
