@@ -33,7 +33,7 @@ jobs:
     - name: Build and push Todo App
       run: |
         ls -la ./todo-master
-        docker build --tag ${{ secrets.DOCKER_HUB_USERNAME }}/todo-app:latest ./todohtml
+        docker build --tag ${{ secrets.DOCKER_HUB_USERNAME }}/todo-app:latest ./todo-master
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/todo-app:latest
 
     - name: Build and push Personal Website
