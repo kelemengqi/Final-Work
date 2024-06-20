@@ -1,0 +1,12 @@
+# docker-compose.yml
+version: '3'
+services:
+  my-website:
+    image: ${{ secrets.DOCKER_USERNAME }}/my-website:latest
+    ports:
+      - "80:80"
+  
+  todo-app:
+    image: docker/getting-started
+    ports:
+      - "3000:3000"
