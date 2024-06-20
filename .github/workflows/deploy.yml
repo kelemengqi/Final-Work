@@ -39,7 +39,7 @@ jobs:
     - name: Build and push Personal Website
       run: |
         ls -la ./my-website
-        docker build --tag ${{ secrets.DOCKER_HUB_USERNAME }}/personal-website:latest ./html
+        docker build --tag ${{ secrets.DOCKER_HUB_USERNAME }}/personal-website:latest ./my-website
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/personal-website:latest
 
     - name: Install SSH key
