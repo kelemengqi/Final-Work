@@ -1,11 +1,8 @@
-version: '3'
+version: '3.3'
 services:
   my-website:
-    image: ${DOCKER_HUB_USERNAME}/my-website:latest
+    image: kelemengqi/my-website:latest
     ports:
       - "80:80"
   
-  todo-app:
-    image: docker/getting-started
-    ports:
-      - "3000:3000"
+  
