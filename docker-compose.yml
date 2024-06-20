@@ -1,11 +1,6 @@
-version: '3.8'
+version: '3.3'
 services:
   my-website:
     image: kelemengqi/my-website:latest
     ports:
       - "80:80"
-  
-  todo-app:
-    image: alexwhen/docker-todo
-    ports:
-      - "3000:3000"
