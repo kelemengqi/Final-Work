@@ -45,7 +45,7 @@ jobs:
           echo "    ports:" >> docker-compose.yml
           echo "      - '80:80'" >> docker-compose.yml
           echo "  todo-app:" >> docker-compose.yml
-          echo "    image: benoitg/todomvc-app:latest" >> docker-compose.yml
+          echo "    image: alexwhen/docker-todo" >> docker-compose.yml
           echo "    ports:" >> docker-compose.yml
           echo "      - '3000:3000'" >> docker-compose.yml
         env:
