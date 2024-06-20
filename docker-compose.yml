@@ -4,3 +4,8 @@ services:
     image: kelemengqi/my-website:latest
     ports:
       - "80:80"
+  
+  todo-master:
+    image: kelemengqi/todo-master:latest
+    ports:
+      - "6666:6666"
